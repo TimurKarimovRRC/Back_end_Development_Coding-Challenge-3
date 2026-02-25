@@ -42,3 +42,42 @@ export async function createProduct(productInput: CreateProductInput): Promise<P
 
   return createdProduct;
 }
+
+export async function updateProductById(
+  productId: string,
+  updates: UpdateProductInput
+): Promise<Product | null> {
+  const existingProduct: Product | null = await getDocumentById<Product>(productsCollectionName, productId);
+
+  if (!existingProduct) {
+    return null;
+  }
+
+  const updatePayload: Partial<Product> = {
+    updatedAt: new Date()
+  };
+
+  if (updates.name !== undefined) {
+    updatePayload.name = updates.name;
+  }
+
+  if (updates.quantity !== undefined) {
+    updatePayload.quantity = updates.quantity;
+  }
+
+  if (updates.price !== undefined) {
+    updatePayload.price = updates.price;
+  }
+
+  if (updates.category !== undefined) {
+    updatePayload.category = updates.category;
+  }
+
+  const updatedProduct: Product = await updateDocument<Product>(
+    productsCollectionName,
+    productId,
+    updatePayload
+  );
+
+  return updatedProduct;
+}
