@@ -81,3 +81,14 @@ export async function updateProductById(
 
   return updatedProduct;
 }
+
+export async function deleteProductById(productId: string): Promise<boolean> {
+  const existingProduct: Product | null = await getDocumentById<Product>(productsCollectionName, productId);
+
+  if (!existingProduct) {
+    return false;
+  }
+
+  await deleteDocument(productsCollectionName, productId);
+  return true;
+}
